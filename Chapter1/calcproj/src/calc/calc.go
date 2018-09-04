@@ -19,6 +19,8 @@ func main(){
         return
     }
 
+    fmt.Println("args[1]... ", args[1])
+    fmt.Println("args[2]... ", args[2])
     switch args[1] {
         case "add":
             if len(args) != 4 {
@@ -40,7 +42,7 @@ func main(){
                 fmt.Println("USAGE: calc sqrt <integer>")
                 return
             }
-            v, err := strconv.Atoi(args[3])
+            v, err := strconv.Atoi(args[2])
             if err != nil {
                 fmt.Println("USAGE: calc sqrt <integer>")
                 return
