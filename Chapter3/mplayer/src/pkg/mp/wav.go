@@ -5,12 +5,12 @@ import (
     "time"
 )
 
-type MP3Player struct {
+type WAVPlayer struct {
     stat int
     progress int
 }
 
-func (p *MP3Player) Play(source string) {
+func (p *WAVPlayer) Play(source string) {
     fmt.Println("Playing MP3 music", source)
 
     p.progress = 0

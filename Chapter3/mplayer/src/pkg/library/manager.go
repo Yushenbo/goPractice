@@ -67,3 +67,6 @@ func (m *MusicManager) Remove(index int) *MusicEntry {
 
     return removedMusic
 }
+
+func (m *MusicManager) RemoveByName(name string) *MusicEntry {
+    
