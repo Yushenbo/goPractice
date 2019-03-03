@@ -57,7 +57,7 @@ func (m *MusicManager) Remove(index int) *MusicEntry {
     removedMusic := &m.musics[index]
 
     // removed Music Entry from Arry Slice
-    if index < len(m.musics)-1 {
+    if index < len(m.musics) - 1 {
         m.musics = append(m.musics[:index-1], m.musics[index+1:]...)
     } else if index == 0 { // remove the very first element
         m.musics = make([]MusicEntry, 0)
@@ -69,4 +69,23 @@ func (m *MusicManager) Remove(index int) *MusicEntry {
 }
 
 func (m *MusicManager) RemoveByName(name string) *MusicEntry {
-    
+    if len(m.musics) == 0 {
+        return nil
+    }
+
+    for index := 0; index < len(m.musics) ; index++ {
+        if m.musics[index].Name == name {
+            removedMusic := &m.musics[index]
+            if index < len(m.musics) - 1 {
+                m.musics = append(m.musics[:index - 1], m.musics[index + 1:]...)
+            } else if index == 0 {
+                m.musics = make([]MusicEntry, 0)
+            } else {
+                m.musics = m.musics[:index - 1]
+            }
+            return removedMusic
+        }
+    }
+    return nil
+}
+
