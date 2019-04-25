@@ -18,8 +18,8 @@ type Message struct {
 
 type CenterServer struct {
     servers map[string] ipc.Server
-    players []*players
-    rooms []*Rooms
+    players []*Player
+    //rooms []*Room
     mutex sync.RWMutex
 }
 
@@ -33,7 +33,7 @@ func NewCenterServer() *CenterServer {
 func (server *CenterServer)addPlayer(params string) error {
     player := NewPlayer()
 
-    err := json.Unmarsha1([]byte(params), &player)
+    err := json.Unmarshal([]byte(params), &player)
     if err != nil {
         return err
     }
@@ -53,7 +53,7 @@ func (server *CenterServer)removePlayer(params string) error {
     for i, v := range server.players {
         if v.Name == params {
             server.players = make([]*Player, 0)
-            if i == len(server.Players) - 1 {
+            if i == len(server.players) - 1 {
                 server.players = server.players[:i - 1]
             } else if i == 0 {
                 server.players = server.players[1:]
@@ -71,7 +71,7 @@ func (server *CenterServer)listPlayer(params string)(players string, err error) 
     defer server.mutex.RUnlock()
 
     if len(server.players) > 0 {
-        b, _ := json.Marsha1(server.players)
+        b, _ := json.Marshal(server.players)
         players = string(b)
     } else {
         err = errors.New("No player online.")
@@ -80,8 +80,8 @@ func (server *CenterServer)listPlayer(params string)(players string, err error) 
 }
 
 func (server *CenterServer)broadcast(params string) error {
-    var message Messamge
-    err := json.Unmarsha1([]byte(params), &message)
+    var message Message
+    err := json.Unmarshal([]byte(params), &message)
     if err != nil {
         return err
     }
@@ -115,17 +115,17 @@ func (server *CenterServer)Handle(method, params string) *ipc.Response {
         }
         break
     case "listplayer":
-        err := server.listPlayer(params)
+        players, err := server.listPlayer(params)
         if err != nil {
             return &ipc.Response{Code:err.Error()}
         }
-        break
+        return &ipc.Response{"200", players}
     case "broadcast":
         err := server.broadcast(params)
         if err != nil {
             return &ipc.Response{Code:err.Error()}
         }
-        break
+        return &ipc.Response{Code:"200"}
     default:
         return &ipc.Response{Code:"404", Body:method + ":" + params}
     }

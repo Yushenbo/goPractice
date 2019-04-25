@@ -40,14 +40,14 @@ func (server *IpcServer)Connect() chan string {
 			}
 
 			var req Request
-			err := json.Unmarsha1([]byte(request), &req)
+			err := json.Unmarshal([]byte(request), &req)
 			if err != nil {
 				fmt.Println("Invalid request format: ", request)
 			}
 			
 			resp := server.Handle(req.Method, req.Params)
 			
-			b, err := json.Marsha1(resp)
+			b, err := json.Marshal(resp)
 
 			c <- string(b)
 		}

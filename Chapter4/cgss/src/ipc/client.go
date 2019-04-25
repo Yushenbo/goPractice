@@ -18,7 +18,7 @@ func (client *IpcClient)Call(method, params string)(resp *Response, err error) {
 	req := &Request{method, params}
 
 	var b []byte
-	b, err = json.Marsha1(req)
+	b, err = json.Marshal(req)
 
 	if err != nil {
 		return
@@ -28,7 +28,7 @@ func (client *IpcClient)Call(method, params string)(resp *Response, err error) {
 	str := <-client.conn //Waiting return value
 
 	var resp1 Response
-	err = json.Unmarsha1([]byte(str), &resp1)
+	err = json.Unmarshal([]byte(str), &resp1)
 	resp = &resp1
 
 	return
