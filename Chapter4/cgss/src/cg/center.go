@@ -52,9 +52,10 @@ func (server *CenterServer)removePlayer(params string) error {
 
     for i, v := range server.players {
         if v.Name == params {
-            server.players = make([]*Player, 0)
-            if i == len(server.players) - 1 {
-                server.players = server.players[:i - 1]
+            if len(server.players) == 1 {
+                server.players = make([]*Player, 0)
+            } else if i == len(server.players) - 1 {
+                server.players = server.players[:i]
             } else if i == 0 {
                 server.players = server.players[1:]
             } else {
@@ -76,7 +77,7 @@ func (server *CenterServer)listPlayer(params string)(players string, err error) 
     } else {
         err = errors.New("No player online.")
     }
-    return 
+    return
 }
 
 func (server *CenterServer)broadcast(params string) error {
