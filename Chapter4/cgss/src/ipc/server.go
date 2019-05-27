@@ -1,61 +1,61 @@
 package ipc
 
 import (
-	"encoding/json"
-	"fmt"
+    "encoding/json"
+    "fmt"
 )
 
 type Request struct {
-	Method string "method"
-	Params string "params"
+    Method string "method"
+    Params string "params"
 }
 
 type Response struct {
-	Code string "code"
-	Body string "body"
+    Code string "code"
+    Body string "body"
 }
 
 type Server interface {
-	Name() string
-	Handle(method, params string) *Response
+    Name() string
+    Handle(method, params string) *Response
 }
 
 type IpcServer struct {
-	Server
+    Server
 }
 
 func NewIpcServer(server Server) *IpcServer {
-	return &IpcServer{server}
+    return &IpcServer{server}
 }
 
 func (server *IpcServer)Connect() chan string {
-	session := make(chan string, 0)
+    session := make(chan string, 0)
 
-	go func(c chan string) {
-		for {
-			request := <-c
+    go func(c chan string) {
+        for {
+            request := <-c
 
-			if request == "CLOSE" { //Close connection
-				break
-			}
+            if request == "CLOSE" { //Close connection
+                break
+            }
 
-			var req Request
-			err := json.Unmarshal([]byte(request), &req)
-			if err != nil {
-				fmt.Println("Invalid request format: ", request)
-			}
-			
-			resp := server.Handle(req.Method, req.Params)
-			
-			b, err := json.Marshal(resp)
+            var req Request
+            err := json.Unmarshal([]byte(request), &req)
+            if err != nil {
+                fmt.Println("Invalid request format: ", request)
+            }
 
-			c <- string(b)
-		}
+            resp := server.Handle(req.Method, req.Params)
 
-		fmt.Println("Session closed")
-	}(session)
+            b, err := json.Marshal(resp)
 
-	fmt.Println("A new session has been created successfully")
+            c <- string(b)
+        }
 
-	return session
+        fmt.Println("Session closed")
+    }(session)
+
+    fmt.Println("A new session has been created successfully")
+
+    return session
 }
