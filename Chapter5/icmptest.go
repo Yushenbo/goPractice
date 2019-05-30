@@ -1,3 +1,9 @@
+/*
+# Runing comand
+
+go run icmptest.go www.baidu.com
+
+*/
 package main
 
 import (
